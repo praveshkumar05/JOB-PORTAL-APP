@@ -9,21 +9,23 @@ const userSchema= new mongoose.Schema({
     lname:{
         type:String
     },
-
     email:{
         type:String,
         required:[true,'Email is require'],
         unique:true,
         validate:validator.isEmail
     },
-    phone:{
-        type:Number,
-        required:[true,'Phone is require'],
-    },
     password:{
         type:String,
-        required:[true,'Email is require']    
+        required:[true,'Email is require'],   
+        minlength:10
     },
+    phone:{
+        type:String,
+        required:[true,'Phone is require'],
+        minlength:10
+    },
+    
    location:{
         type:String,
         default:"India"
