@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import jobModel from "../models/jobModel.js";
+
 
 export const createJobController=async(req,res,next)=>{
     try {
@@ -82,6 +84,34 @@ export const deleteJobController=async(req,res,next)=>{
     } catch (error) {
         // console.log(error);
         return next("there is some error during deletion of JOB")
+        
+    }
+}
+
+export const filteredJobController=async(req,res,next)=>{
+    try {
+
+        const filteredJobs=await jobModel.aggregate( [
+            // Stage 1: Filter pizza order documents by pizza size
+            {
+               $match: { createdBy: new mongoose.Types.ObjectId(req.user._id) }
+            },
+            // Stage 2: Group remaining documents by pizza name and calculate total quantity
+            {
+               $group: { _id: "$status", totalQuantity: { $sum:1 } }
+            }
+         ] )
+        //  let defaultStats={
+        //     pending:filteredJobs.pending,
+        //     reject:filteredJobs.reject
+        //  }
+       return   res.status(201).send({
+            success:true,
+            filteredJobs
+        })
+    } catch (error) {
+        console.log(error);
+        next("error in getting filtered JOb",error);
         
     }
 }
