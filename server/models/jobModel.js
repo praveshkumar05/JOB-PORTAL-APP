@@ -9,7 +9,7 @@ const jobSchema=new mongoose.Schema({
         type:String,
         required:[true,'Position is required']
     },
-    staus:{
+    status:{
         type:String,
         enum:["pending",'reject','interview'],
         default:'pending'

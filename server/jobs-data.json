@@ -1,9 +1,7 @@
 [
     {
       "createdAt": { "$date": "2023-03-11T02:05:30.000Z" },
-      "createdBy": {
-        "$oid": "64738fb2a611ff3326cb4678"
-      },
+      "createdBy": {"$oid": "64738fb2a611ff3326cb4678"},
       "workLocation": "Peru",
       "workType": "full-time",
       "status": "interview",
