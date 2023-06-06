@@ -55,10 +55,12 @@ export const getAllJobController = async (req, res, next) => {
           var skip=(page-1)*limit;
 
         const jobs = await jobModel.find(queryObject).sort(sort === "latest" ? '-createdAt' : sort==='oldest'? "createdAt": sort==='a-z'?"company":"-company").skip(skip).limit(limit);
-
+        const totalJobs=await jobModel.countDocuments(queryObject);
+        const numOfPage= Math.ceil(totalJobs/limit); 
         res.status(200).send({
             success: true,
-            totalJobs: jobs.length,
+            totalJobs,
+            numOfPage,
             jobs
         })
     }
