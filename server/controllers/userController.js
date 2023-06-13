@@ -1,24 +1,36 @@
 import userModel from "../models/userModel.js";
 import jwt from 'jsonwebtoken'
+import nodemailer from 'nodemailer'
 import { hashPassword, verifyPassword } from "../utils/hashPassword.js";
+
+
+const transporter=nodemailer.createTransport({
+    service:"gmail",
+    auth:{
+        user:"praveshkumar1062002@gmail.com",
+        pass:"yqdiibfirtxndqnb"
+        
+    }
+})
 export const registerController=async(req,res,next)=>{
     try {
         const {fname,lname,email,phone,password,location}=req.body;
+        console.log(req.body);
         if(!fname)
         {
-            next("Please provide the the first name");
+           return  next("Please provide the the first name");
         }
         else if(!email)
         {
-            next("Please provide the  email");
+           return  next("Please provide the  email");
         }
         else if(!password)
         {
-            next("Please provide the password");
+           return   next("Please provide the password");
         }
         else if(!phone)
         {
-            next("Please provide the Phone ");
+           return  next("Please provide the Phone ");
         }
         const userfind=await userModel.findOne({email});
         if(!userfind){
@@ -38,17 +50,17 @@ export const registerController=async(req,res,next)=>{
              })
         }
         else{
-           next("user already exist");
+          return  next("user already exist");
         }  
     } catch (error) {
         console.lor(error);
-       next(error);
+      return  next(error);
     }
 }
 export const loginController=async(req,res,next)=>{
     try {
         const {email,password}=req.body;
-
+         
         if(!email||!password){
            return next("please provide correct email and password")
         }
@@ -74,6 +86,7 @@ export const loginController=async(req,res,next)=>{
                 phone:userExist.phone,
                 location:userExist.location,
             },
+            message:"You are logged in ",
             token
         })
 
@@ -85,6 +98,7 @@ export const loginController=async(req,res,next)=>{
     return next(error);
     }
 }
+
 export const updateuserController=async(req,res,next)=>{
     try { 
        let {fname,lname,email,password,phone,location}=req.body;
@@ -116,5 +130,83 @@ export const updateuserController=async(req,res,next)=>{
     } catch (error) {
         console.log(error);
         next(error);
+    }
+}
+export const forgetPasswordController=async(req,res,next)=>{
+    try {
+            const {email}=req.body;
+            const userExist=await userModel.findOne({email:email});
+            if(userExist)
+            {
+               const token=  jwt.sign({_id:userExist._id},process.env.JWT_SECRET,{expiresIn:"1d"});
+               const setUserToken=await userModel.findByIdAndUpdate({_id:userExist._id},{token:token},{new:true});
+               console.log(setUserToken);
+               if(setUserToken)
+               {
+                       const mailOptions=
+                       {
+                           from:"praveshkumar1062002@gmail.com",
+                           to:email,
+                           subject:"sending Email for password Reset",
+                           text: `This Link valid For 5 minutes only http://localhost:3000/resetpassword/${userExist._id}/${token}`
+                       }   
+                       
+                       transporter.sendMail(mailOptions,(error,info)=>{
+                           if(error)
+                           {
+                               res .status(401).json({success:false,message:"no link is sent"})
+                           }
+                           else
+                           {
+                               res.status(201).json({success:true,message:"Email sent succesfully"});
+                           }
+                       })
+               }
+            }
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+export const resetpasswordController=async(req,res,next)=>{
+    try {
+           const {id,token}=req.params;
+           let {password}=req.body;
+           const userExist=await userModel.findById({_id:id});
+           if(userExist)
+           {
+              const verify=jwt.verify(token,process.env.JWT_SECRET);
+                if(verify)
+                {
+                    const hashedPassword=await hashPassword(password);
+                    password=hashedPassword;
+                    const updatepassword=await userModel.findByIdAndUpdate({_id:id},{password:password},{new:true});
+                    if(updatepassword)
+                    {
+                        console.log("password updated")
+                       return res.status(201).send({
+                            success:true,
+                            message:"Your Password is updated"
+                        })
+                    }
+                    else{
+                        res.status(401).send({
+                            success:false,
+                            message: "something went wrong please try again"
+                        })
+                    }
+                }
+                else{
+                    next("Link Is expired");
+                }
+
+           }else{
+             next("invalid user");
+           }
+           
+    } catch (error) {
+        console.log(error);
+        next("something went wrong");
     }
 }

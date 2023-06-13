@@ -1,6 +1,7 @@
 import express from 'express'
-import { loginController, registerController } from '../controllers/userController.js';
+import { forgetPasswordController, loginController, registerController, resetpasswordController } from '../controllers/userController.js';
 import rateLimit from 'express-rate-limit'
+
 
 const limiter = rateLimit({
 	windowMs: 100 * 60 * 1000, // 100 minutes
@@ -12,5 +13,7 @@ const limiter = rateLimit({
 const router=express.Router();
 
 router.post('/register',limiter,registerController);
-router.post('/login',limiter,loginController)
+router.post('/login',limiter,loginController);
+router.post("/forget-password",limiter,forgetPasswordController);
+router.post("/reset-password/:id/:token",limiter,resetpasswordController);
 export default router
