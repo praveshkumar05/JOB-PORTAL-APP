@@ -1,0 +1,86 @@
+.mycontainer{
+    min-height: 100vh;
+    background-image: url(../../public/images/lauren-mancke-aOC7TSLb1o8-unsplash.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+   
+}
+.mycontainer .myrow{
+
+        min-height: 100vh;
+    
+}
+.mycontainer .myrow .mycol{
+    position: relative;
+    /* border: 2px solid black; */
+    align-items: center;
+
+}
+.mycontainer .myrow .mycol .mycard{
+        background-color: transparent;
+        border: none;
+        transform: scale(1);
+        transition: transform 0.5s;
+}
+.mycontainer .myrow .mycol .mycard:hover{
+  
+    transform: scale(1.1)
+}
+
+.mycontainer .myrow .mycol .mycard1{
+    background-color: transparent;
+    border: none;
+    width: 80%;
+    height:200px;
+    border-radius: 2%;
+    transform: scale(1); 
+    transition: transform 0.5s;  
+}
+.mycontainer .myrow .mycol .mycard1:hover{
+    background-color: #C2DEDC;
+    width: 80%;
+    border-radius: 2%;
+    transform: scale(1.2);   
+}
+.mycontainer .myrow .mycol .mycard1 h1{
+   
+    
+    
+}
+.mycontainer .myrow .mycol .mycard h1{
+
+   
+}
+.mycontainer .myrow .mycol .mycard .myinput{
+    
+    background-color :rgb(164, 98, 98);
+    color:whitesmoke;
+    font-size: 20px;
+    border: 2px solid white;
+    height: 60px;
+    width: 100%;
+    transition: height,width,color,border 0.5s, 0.5s, 0.5s, 0.5s;
+}
+.mycontainer .myrow .mycol .mycard .myinput:hover{
+    
+    border: 4px solid white;
+
+}
+.buttonIN{
+        position: relative;
+
+}
+.buttonIN button{
+    position: absolute;
+    top:2px;
+    right: 2px;
+    height: 56px;
+}
+.buttonIN button:hover{
+    background-color: black;
+    position: absolute;
+    top:2px;
+    right: 2px;
+    height: 56px;
+}
